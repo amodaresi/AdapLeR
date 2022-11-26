@@ -74,7 +74,7 @@ def glue_examples_to_tfdataset(examples,
          'attention_mask': tf.TensorShape([None])},
          tf.TensorShape([])))
 
-def save_pred_glue(predict, TASK=None, OUTPUT_DIR=None, LR_MODEL=False, NAME_ADD=""):
+def save_pred_glue(predict, TASK=None, OUTPUT_DIR=None, NAME_ADD=""):
     indexes = np.arange(len(predict))
 
     if TASK == 'mrpc' or TASK == 'cola' or TASK == 'sst2' or TASK == 'qqp':
@@ -89,7 +89,7 @@ def save_pred_glue(predict, TASK=None, OUTPUT_DIR=None, LR_MODEL=False, NAME_ADD
         raise ValueError('No such TASK available.')
 
     ## Write the predictions in file
-    TEST_PRED_FILE = os.path.join(OUTPUT_DIR, f"glue_prediction_{NAME_ADD}_lr.tsv" if LR_MODEL else f"glue_prediction_{NAME_ADD}.tsv")
+    TEST_PRED_FILE = os.path.join(OUTPUT_DIR, f"glue_prediction_{NAME_ADD}.tsv")
 
     if TASK == "sts-b":
         with open(TEST_PRED_FILE, 'w') as test_fh:

@@ -1,7 +1,10 @@
+import os
 import sys
+import pickle
 import os.path as o
 
 sys.path.append(o.abspath(o.join(o.dirname(sys.modules[__name__].__file__), "..")))
+uppath = lambda _path, n: os.sep.join(_path.split(os.sep)[:-n])
 
 import argparse
 from directories import *
@@ -73,6 +76,7 @@ if SELECTED_GPU == "multi":
         model = TFBertForSequenceClassification.from_pretrained(MODEL_PATH, config=config, from_pt=MAX_LENGTH > 512)
         if args.LR_MODEL:
           model.to_AdapLeR()
+          model.compile()
           model.load_weights(LOAD_MODEL_PATH)
         else:
           model.load_weights(LOAD_MODEL_PATH)
@@ -82,6 +86,7 @@ else:
     model = TFBertForSequenceClassification.from_pretrained(MODEL_PATH, config=config, from_pt=MAX_LENGTH > 512)
     if args.LR_MODEL:
       model.to_AdapLeR()
+      model.compile()
       model.load_weights(LOAD_MODEL_PATH)
     else:
       model.load_weights(LOAD_MODEL_PATH)
@@ -98,6 +103,5 @@ checkpoint = ModelCheckpoint_wlr(
 checkpoint.set_model(model=model)
 flops = checkpoint.on_epoch_end(1, inf_lambda=True)
 
-import pickle
-with open(f"./directory/bert/42/{TASK}/logs/flops_per_example.pickle", "wb") as f:
+with open(uppath(args.MODEL_PATH, 3) + "/logs/flops_per_example.pickle", "wb") as f:
   pickle.dump(flops, f, protocol=pickle.HIGHEST_PROTOCOL)

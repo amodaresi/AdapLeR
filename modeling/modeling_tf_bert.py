@@ -1679,7 +1679,7 @@ class TFBertForSequenceClassification(TFBertPreTrainedModel, TFSequenceClassific
 
         return TFSequenceClassifierOutput(logits=output.logits, hidden_states=hs, attentions=attns)
     
-    def compile(self, optimizer, speedup_optimizer, run_eagerly=False, GAMMA=0.01, PHI=0.01, accum_steps=1, class_weights=None):
+    def compile(self, optimizer=None, speedup_optimizer=None, run_eagerly=False, GAMMA=0.01, PHI=0.01, accum_steps=1, class_weights=None):
         super(TFBertForSequenceClassification, self).compile()
         self.optimizer = optimizer
         self.speedup_optimizer = speedup_optimizer

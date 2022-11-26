@@ -38,7 +38,7 @@ python ./tools/store_saliencies.py --TASK sst2 --DATA_SEED 22 --MAX_LENGTH 64 --
 
 ## Training AdapLeR
 ```shell script
-python ./run_files/run_classification_w_lr.py --TASK sst2 --GAMMA 0.005 --PHI 0.0005 --SAVE_NAME run_1_sst2 --BATCH_SIZE 32 --DATA_SEED 42 --EPOCHS 5 --MAX_LENGTH 64 --LEARNING_RATE 3e-5
+python ./run_files/run_classification_w_lr.py --TASK sst2 --GAMMA 0.005 --PHI 0.0005 --SAVE_NAME run_1_sst2 --BATCH_SIZE 32 --DATA_SEED 22 --EPOCHS 5 --MAX_LENGTH 64 --LEARNING_RATE 3e-5
 ```
 
 ## Evaluation
@@ -50,3 +50,13 @@ For GLUE tasks:
 ```shell script
 python ./run_files/run_glue_prediction.py --TASK sst2 --MAX_LENGTH 64 --LR_MODEL --MODEL_PATH PATH_TO_MODEL.h5 --LR_MODEL
 ```
+
+## Inference Mode
+The evaluation method stated above employs a batchwise prediction loop and pre-computed FLOPs formulas for BERT and AdapLeR, which determines the final total speedup.
+
+However to utilize AdapLeR in inference mode it is necessary to feed the model in a single instance manner (as stated in the paper). For this, the model can enter a length-reducing inference mode when the `lr_mode=True` flag is set:
+```
+encoded = tokenizer.encode_plus("a sample text.", return_tensors="tf")
+outputs = model(encoded, lr_mode=True)
+```
+This mode will drop the non-contributing tokens in each layer, resulting in a lower computational cost than the vanilla BERT model.
